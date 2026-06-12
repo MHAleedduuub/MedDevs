@@ -1,10 +1,10 @@
 /* ============================================
-   Dev Place - MAD MAN | Complete Script v2
+   Dev Place - MAD MAN | Hash Router Version
    ============================================ */
 
 // ============ App State ============
 const APP = {
-    page: window.location.pathname,
+    page: getPageFromHash(),
     theme: localStorage.getItem('dp-theme') || 'dark',
     lang: localStorage.getItem('dp-lang') || 'ar',
     user: JSON.parse(localStorage.getItem('dp-user') || 'null'),
@@ -12,6 +12,12 @@ const APP = {
     projects: JSON.parse(localStorage.getItem('dp-projects') || '[]'),
     deleteId: null
 };
+
+function getPageFromHash() {
+    const hash = window.location.hash;
+    if (!hash || hash === '#/' || hash === '') return '/';
+    return hash.replace('#', '') || '/';
+}
 
 // ============ Init ============
 (function() {
@@ -23,7 +29,6 @@ const APP = {
     }
     updateThemeIcon();
 
-    // Default owner
     if (!APP.users.length) {
         APP.users.push({
             id: 1, username: 'Owner', email: 'mohamedhere63@gmail.com',
@@ -33,7 +38,6 @@ const APP = {
         saveUsers();
     }
 
-    // Default projects
     if (!APP.projects.length) {
         APP.projects.push(
             { id: 1, title: 'قالب موقع شخصي', desc: 'قالب احترافي متجاوب', type: 'HTML/CSS/JS', status: 'completed', file: '', downloads: 120 },
@@ -103,7 +107,7 @@ function bindEvents() {
         if (st) st.classList.toggle('show', sy > 300);
     });
 
-    window.addEventListener('popstate', router);
+    window.addEventListener('hashchange', router);
 
     document.addEventListener('mousemove', (e) => {
         const cur = document.querySelector('.cursor');
@@ -116,7 +120,8 @@ function bindEvents() {
         const link = e.target.closest('[data-link]');
         if (link) {
             e.preventDefault();
-            navigateTo(link.getAttribute('href'));
+            const href = link.getAttribute('href');
+            navigateTo(href);
         }
     });
 
@@ -148,13 +153,16 @@ function bindEvents() {
 
 // ============ Router ============
 function router() {
-    APP.page = window.location.pathname;
+    APP.page = getPageFromHash();
     const app = document.getElementById('app');
     if (!app) return;
 
     document.querySelectorAll('.nav-item').forEach(l => {
         l.classList.remove('active');
-        if (l.getAttribute('href') === APP.page) l.classList.add('active');
+        const href = l.getAttribute('href');
+        if (href === APP.page || href === '#' + APP.page || href === '/#' + APP.page) {
+            l.classList.add('active');
+        }
     });
 
     if (APP.page === '/') renderHome(app);
@@ -173,8 +181,13 @@ function router() {
 }
 
 function navigateTo(path) {
-    history.pushState({}, '', path);
-    router();
+    window.location.hash = path;
+}
+
+// ============ Helper to get user info ============
+function getCurrentUserInfo() {
+    if (!APP.user) return null;
+    return APP.users.find(x => x.username === APP.user.username) || APP.user;
 }
 
 // ============ PAGE: Home ============
@@ -305,20 +318,17 @@ function renderContact(app) {
             <div class="contact-grid">
                 <div class="contact-card">
                     <div class="contact-card-icon"><i class="fas fa-envelope"></i></div>
-                    <h3>البريد</h3>
-                    <p>mohamedhere63@gmail.com</p>
+                    <h3>البريد</h3><p>mohamedhere63@gmail.com</p>
                     <button class="copy-btn" onclick="copyText('mohamedhere63@gmail.com')"><i class="fas fa-copy"></i> نسخ</button>
                 </div>
                 <div class="contact-card">
                     <div class="contact-card-icon"><i class="fab fa-discord"></i></div>
-                    <h3>ديسكورد</h3>
-                    <p>81a0</p>
+                    <h3>ديسكورد</h3><p>81a0</p>
                     <button class="copy-btn" onclick="copyText('81a0')"><i class="fas fa-copy"></i> نسخ</button>
                 </div>
                 <div class="contact-card">
                     <div class="contact-card-icon"><i class="fab fa-telegram"></i></div>
-                    <h3>تلجرام</h3>
-                    <p>لم يتم تحديد</p>
+                    <h3>تلجرام</h3><p>لم يتم تحديد</p>
                 </div>
             </div>
         </div>
@@ -332,14 +342,14 @@ function renderDashboard(app) {
     const total = APP.projects.length;
     const done = APP.projects.filter(p => p.status === 'completed').length;
     const dls = APP.projects.reduce((s, p) => s + (p.downloads || 0), 0);
-    const u = APP.users.find(x => x.username === APP.user.username) || APP.user;
+    const u = getCurrentUserInfo();
 
     app.innerHTML = `
     <div class="dashboard-layout">
         <aside class="dashboard-sidebar">
             <div class="sidebar-header"><div class="sidebar-logo">Dev <span>Place</span></div></div>
             <nav class="sidebar-nav">
-                <a href="/dashboard" class="active"><i class="fas fa-grid"></i> نظرة عامة</a>
+                <a href="/dashboard" class="active" data-link><i class="fas fa-grid"></i> نظرة عامة</a>
                 <a href="/projects" data-link><i class="fas fa-folder"></i> المشاريع</a>
                 <a href="/profile" data-link><i class="fas fa-user"></i> الملف الشخصي</a>
                 <a href="#" onclick="logout()"><i class="fas fa-logout"></i> خروج</a>
@@ -427,7 +437,7 @@ function renderVerify(app) {
 // ============ PAGE: Profile ============
 function renderProfile(app) {
     if (!APP.user) { navigateTo('/'); return; }
-    const u = APP.users.find(x => x.username === APP.user.username) || APP.user;
+    const u = getCurrentUserInfo();
     app.innerHTML = `
     <section class="profile-page">
         <div class="profile-card">
@@ -537,7 +547,7 @@ function openProjectModal(id) {
     document.getElementById('projectSubmitBtn').innerHTML = '<span>حفظ</span><i class="fas fa-save"></i>';
 
     if (id) {
-        var p = APP.projects.find(function(x) { return x.id === id; });
+        const p = APP.projects.find(function(x) { return x.id === id; });
         if (p) {
             document.getElementById('projectTitle').value = p.title;
             document.getElementById('projectDesc').value = p.desc;
@@ -558,18 +568,18 @@ function openProjectModal(id) {
 
 function saveProject(e) {
     e.preventDefault();
-    var id = parseInt(document.getElementById('projectId').value) || null;
-    var title = document.getElementById('projectTitle').value.trim();
-    var desc = document.getElementById('projectDesc').value.trim();
-    var type = document.getElementById('projectType').value.trim();
-    var status = document.getElementById('projectStatus').value;
-    var file = document.getElementById('projectFile').value.trim();
-    var errorEl = document.getElementById('projectError');
+    const id = parseInt(document.getElementById('projectId').value) || null;
+    const title = document.getElementById('projectTitle').value.trim();
+    const desc = document.getElementById('projectDesc').value.trim();
+    const type = document.getElementById('projectType').value.trim();
+    const status = document.getElementById('projectStatus').value;
+    const file = document.getElementById('projectFile').value.trim();
+    const errorEl = document.getElementById('projectError');
 
     if (!title || !desc || !type) { errorEl.textContent = 'كل الحقول مطلوبة'; return; }
 
     if (id) {
-        var p = APP.projects.find(function(x) { return x.id === id; });
+        const p = APP.projects.find(function(x) { return x.id === id; });
         if (p) { p.title = title; p.desc = desc; p.type = type; p.status = status; p.file = file; }
     } else {
         APP.projects.push({ id: Date.now(), title: title, desc: desc, type: type, status: status, file: file, downloads: 0, created: new Date().toISOString() });
@@ -594,7 +604,7 @@ function confirmDeleteProject(id) {
 }
 
 function downloadProject(id) {
-    var p = APP.projects.find(function(x) { return x.id === id; });
+    const p = APP.projects.find(function(x) { return x.id === id; });
     if (p) {
         p.downloads = (p.downloads || 0) + 1;
         saveProjects();
@@ -605,19 +615,19 @@ function downloadProject(id) {
 
 // ============ Modal ============
 function openModal(id) {
-    var m = document.getElementById(id);
+    const m = document.getElementById(id);
     if (m) { m.classList.add('active'); document.body.style.overflow = 'hidden'; }
 }
 
 function closeModal(id) {
-    var m = document.getElementById(id);
+    const m = document.getElementById(id);
     if (m) {
         m.classList.remove('active');
         document.body.style.overflow = '';
         if (id === 'loginModal') {
-            var f = document.getElementById('loginForm');
+            const f = document.getElementById('loginForm');
             if (f) f.reset();
-            var e = document.getElementById('loginError');
+            const e = document.getElementById('loginError');
             if (e) e.textContent = '';
         }
     }
@@ -631,8 +641,8 @@ function copyText(txt) {
 }
 
 function togglePass(id, btn) {
-    var inp = document.getElementById(id);
-    var icon = btn.querySelector('i');
+    const inp = document.getElementById(id);
+    const icon = btn.querySelector('i');
     if (inp && icon) {
         inp.type = inp.type === 'password' ? 'text' : 'password';
         icon.className = inp.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
@@ -641,9 +651,9 @@ function togglePass(id, btn) {
 
 function showToast(msg, type) {
     type = type || '';
-    var c = document.getElementById('toasts');
+    const c = document.getElementById('toasts');
     if (!c) return;
-    var t = document.createElement('div');
+    const t = document.createElement('div');
     t.className = 'toast ' + type;
     t.textContent = msg;
     c.appendChild(t);
