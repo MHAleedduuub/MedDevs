@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD THING</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ============ شريط التنقل ============ -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo" data-link>MD THING</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/" class="nav-link active" data-link>الرئيسية</a></li>
+                <li><a href="/dashboard" class="nav-link" data-link>لوحة التحكم</a></li>
+                <li><a href="/projects" class="nav-link" data-link>المشاريع</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="icon-btn lang-toggle" id="langToggle"><span class="lang-text">EN</span></button>
+                <button class="icon-btn theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <button class="btn btn-primary btn-sm" id="loginBtnNav" onclick="openModal('loginModal')"><i class="fas fa-sign-in-alt"></i> دخول</button>
+                <button class="btn btn-outline btn-sm" id="logoutBtnNav" style="display:none;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
+                <button class="icon-btn menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============ المحتوى الرئيسي ============ -->
+    <main id="app"></main>
+
+    <!-- ============ فوتر ============ -->
+    <footer class="footer" id="footer">
+        <p>© 2024 <strong>MD THING</strong> - صنع بواسطة <strong>Owner</strong></p>
+    </footer>
+
+    <!-- ============ نافذة تسجيل الدخول ============ -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>تسجيل الدخول</h2>
+                <button class="icon-btn" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>اسم المستخدم</label>
+                        <input type="text" id="loginUser" placeholder="Owner" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="loginPass" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-error" id="loginError"></div>
+                    <button type="submit" class="btn btn-primary btn-block">دخول</button>
+                </form>
+                <p style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--text-muted);">
+                    ماعندك حساب؟ <a href="/register" data-link style="color:var(--primary);">سوي حساب جديد</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ نافذة حذف المشروع ============ -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>تأكيد الحذف</h2>
+                <button class="icon-btn" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>متأكد تبي تحذف المشروع؟</p>
+                <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;">
+                    <button class="btn btn-outline" onclick="closeModal('deleteModal')">إلغاء</button>
+                    <button class="btn btn-primary" id="confirmDelete" style="background:#dc3545;">حذف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
