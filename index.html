@@ -1,179 +1,166 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Dev Place - موقع المطور MAD MAN | مبرمج محترف صانع هوستات ومواقع">
-    <meta name="author" content="MAD MAN">
-    <meta name="theme-color" content="#0d6efd">
+    <meta name="description" content="Dev Place - MAD MAN | مبرمج محترف صانع هوستات ومواقع">
+    <meta name="theme-color" content="#6c5ce7">
     <title>Dev Place | MAD MAN</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- ==================== شريط التنقل ==================== -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo" data-link>
-                <i class="fas fa-terminal"></i> Dev <span>Place</span>
+    <!-- ============ مؤشر مخصص ============ -->
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <!-- ============ جسيمات الخلفية ============ -->
+    <div class="particles" id="particles"></div>
+
+    <!-- ============ شريط التنقل ============ -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="/" class="brand" data-link>
+                <div class="brand-icon"><i class="fas fa-bolt"></i></div>
+                <div class="brand-text">Dev<span>Place</span></div>
             </a>
-
-            <ul class="nav-links" id="navLinks">
-                <li><a href="/" class="nav-link" data-link><i class="fas fa-home"></i> الرئيسية</a></li>
-                <li><a href="/about" class="nav-link" data-link><i class="fas fa-user-secret"></i> عن المطور</a></li>
-                <li><a href="/projects" class="nav-link" data-link><i class="fas fa-laptop-code"></i> المشاريع</a></li>
-                <li><a href="/contact" class="nav-link" data-link><i class="fas fa-paper-plane"></i> تواصل</a></li>
-                <li><a href="/dashboard" class="nav-link" data-link><i class="fas fa-cogs"></i> لوحة التحكم</a></li>
-            </ul>
-
-            <div class="nav-actions">
-                <button class="icon-btn" id="langToggle" title="Change Language">
-                    <span class="lang-text">EN</span>
+            <nav class="nav" id="nav">
+                <a href="/" class="nav-item active" data-link>الرئيسية</a>
+                <a href="/about" class="nav-item" data-link>عن المطور</a>
+                <a href="/projects" class="nav-item" data-link>المشاريع</a>
+                <a href="/contact" class="nav-item" data-link>تواصل</a>
+                <a href="/dashboard" class="nav-item nav-item-special" data-link>لوحة التحكم</a>
+            </nav>
+            <div class="header-actions">
+                <button class="action-btn" id="themeToggle">
+                    <i class="fas fa-sun"></i>
                 </button>
-                <button class="icon-btn" id="themeToggle" title="تغيير الوضع">
-                    <i class="fas fa-moon"></i>
+                <button class="action-btn" id="langToggle">
+                    <span>EN</span>
                 </button>
-                <button class="btn btn-primary btn-sm" id="loginBtnNav" onclick="openModal('loginModal')">
-                    <i class="fas fa-sign-in-alt"></i> دخول
+                <button class="btn-glass" id="loginBtnHeader" onclick="openModal('loginModal')">
+                    <i class="fas fa-arrow-right"></i> دخول
                 </button>
-                <div class="user-dropdown" id="userDropdown" style="display:none;">
-                    <button class="btn btn-outline btn-sm" id="userBtn">
-                        <i class="fas fa-user-circle"></i> <span id="userBtnName">MAD MAN</span> <i class="fas fa-chevron-down"></i>
+                <div class="user-menu" id="userMenu" style="display:none;">
+                    <button class="btn-glass" id="userMenuBtn">
+                        <div class="user-avatar-sm">M</div>
+                        <span id="userMenuName">MAD MAN</span>
                     </button>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <a href="/dashboard" data-link><i class="fas fa-tachometer-alt"></i> لوحة التحكم</a>
-                        <a href="/profile" data-link><i class="fas fa-id-card"></i> الملف الشخصي</a>
-                        <hr>
-                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</a>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/dashboard" data-link><i class="fas fa-grid"></i> لوحة التحكم</a>
+                        <a href="/profile" data-link><i class="fas fa-user"></i> الملف الشخصي</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" onclick="logout()" class="danger"><i class="fas fa-logout"></i> خروج</a>
                     </div>
                 </div>
-                <button class="icon-btn menu-toggle" id="menuToggle">
+                <button class="action-btn menu-btn" id="menuToggle">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- ==================== المحتوى الرئيسي ==================== -->
+    <!-- ============ شريط التقدم ============ -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- ============ المحتوى الرئيسي ============ -->
     <main id="app"></main>
 
-    <!-- ==================== الفوتر ==================== -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h3><i class="fas fa-terminal"></i> Dev Place</h3>
-                    <p>موقع المطور المحترف MAD MAN - صانع الهوستات والمواقع الاحترافية. نقدم حلول تقنية متكاملة بجودة عالية.</p>
-                    <div class="social-links">
-                        <a href="#" title="Discord"><i class="fab fa-discord"></i></a>
-                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
-                        <a href="#" title="Email"><i class="fas fa-envelope"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h4>روابط سريعة</h4>
-                    <a href="/" data-link>الرئيسية</a>
-                    <a href="/about" data-link>عن المطور</a>
-                    <a href="/projects" data-link>المشاريع</a>
-                    <a href="/contact" data-link>تواصل</a>
-                    <a href="/dashboard" data-link>لوحة التحكم</a>
-                </div>
-                <div class="footer-col">
-                    <h4>تواصل</h4>
-                    <p><i class="fas fa-envelope"></i> mohamedhere63@gmail.com</p>
-                    <p><i class="fab fa-discord"></i> 81a0</p>
-                </div>
+    <!-- ============ الفوتر ============ -->
+    <footer class="footer-new">
+        <div class="footer-glow"></div>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="brand-icon-lg"><i class="fas fa-bolt"></i></div>
+                <h3>Dev Place</h3>
+                <p>منصة المطور المحترف MAD MAN - نبني المستقبل الرقمي</p>
             </div>
-            <div class="footer-bottom">
-                <p>© 2024 <strong>Dev Place</strong> - جميع الحقوق محفوظة. صنع بواسطة <strong>MAD MAN</strong> 🔥</p>
+            <div class="footer-links">
+                <h4>استكشف</h4>
+                <a href="/" data-link>الرئيسية</a>
+                <a href="/about" data-link>عن المطور</a>
+                <a href="/projects" data-link>المشاريع</a>
+                <a href="/dashboard" data-link>لوحة التحكم</a>
             </div>
+            <div class="footer-contact">
+                <h4>تواصل</h4>
+                <p><i class="fas fa-envelope"></i> mohamedhere63@gmail.com</p>
+                <p><i class="fab fa-discord"></i> 81a0</p>
+            </div>
+        </div>
+        <div class="footer-bar">
+            <p>© 2024 Dev Place — Made with 🔥 by <strong>MAD MAN</strong></p>
         </div>
     </footer>
 
-    <!-- ==================== نافذة تسجيل الدخول ==================== -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
-                <button class="icon-btn" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body">
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label>اسم المستخدم أو البريد</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="loginUser" placeholder="Owner" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>كلمة المرور</label>
-                        <div class="input-with-icon">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="loginPass" placeholder="••••••••" required>
-                            <button type="button" class="toggle-pass" onclick="togglePassword('loginPass', this)"><i class="fas fa-eye"></i></button>
-                        </div>
-                    </div>
-                    <div class="form-error" id="loginError"></div>
-                    <button type="submit" class="btn btn-primary btn-block">دخول</button>
-                </form>
-                <p class="form-footer-text">
-                    ما عندك حساب؟ <a href="/register" data-link>سوي حساب جديد</a>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== نافذة تأكيد الحذف ==================== -->
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal modal-sm">
-            <div class="modal-header">
-                <h2><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h2>
-                <button class="icon-btn" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body text-center">
-                <div style="font-size:3rem;color:var(--danger);margin-bottom:14px;"><i class="fas fa-trash-alt"></i></div>
-                <p>متأكد تبي تحذف هذا المشروع؟</p>
-                <p style="color:var(--danger);font-size:0.85rem;">هذا الإجراء ما يتراجع!</p>
-                <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;">
-                    <button class="btn btn-outline" onclick="closeModal('deleteModal')">إلغاء</button>
-                    <button class="btn btn-danger" id="confirmDeleteBtn"><i class="fas fa-trash"></i> حذف</button>
+    <!-- ============ نافذة تسجيل الدخول ============ -->
+    <div class="modal" id="loginModal">
+        <div class="modal-backdrop" onclick="closeModal('loginModal')"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('loginModal')"><i class="fas fa-times"></i></button>
+            <div class="modal-icon"><i class="fas fa-lock"></i></div>
+            <h2>تسجيل الدخول</h2>
+            <p>أهلاً بعودتك يا بطل</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginUser" placeholder="اسم المستخدم أو البريد" required>
                 </div>
+                <div class="input-group">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="loginPass" placeholder="كلمة المرور" required>
+                    <button type="button" class="toggle-pass-btn" onclick="togglePassword('loginPass',this)"><i class="fas fa-eye"></i></button>
+                </div>
+                <div class="form-error" id="loginError"></div>
+                <button type="submit" class="btn-glow btn-full">
+                    <span>دخول</span><i class="fas fa-arrow-left"></i>
+                </button>
+            </form>
+            <p class="modal-footer-text">ما عندك حساب؟ <a href="/register" data-link>سوي واحد</a></p>
+        </div>
+    </div>
+
+    <!-- ============ نافذة تأكيد الحذف ============ -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-backdrop" onclick="closeModal('deleteModal')"></div>
+        <div class="modal-content modal-sm">
+            <button class="modal-close" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button>
+            <div class="modal-icon danger"><i class="fas fa-trash"></i></div>
+            <h2>تأكيد الحذف</h2>
+            <p>متأكد؟ هذا الإجراء ما يتراجع!</p>
+            <div class="modal-actions">
+                <button class="btn-glass" onclick="closeModal('deleteModal')">إلغاء</button>
+                <button class="btn-glow danger" id="confirmDeleteBtn">حذف</button>
             </div>
         </div>
     </div>
 
-    <!-- ==================== نافذة إضافة/تعديل مشروع ==================== -->
-    <div class="modal-overlay" id="projectModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 id="projectModalTitle"><i class="fas fa-plus-circle"></i> إضافة مشروع</h2>
-                <button class="icon-btn" onclick="closeModal('projectModal')"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body">
-                <form id="projectForm" onsubmit="saveProject(event)">
-                    <input type="hidden" id="projectId">
-                    <div class="form-group"><label>عنوان المشروع</label><input type="text" id="projectTitle" placeholder="اسم المشروع" required></div>
-                    <div class="form-group"><label>الوصف</label><textarea id="projectDesc" placeholder="وصف المشروع" required></textarea></div>
-                    <div class="form-group"><label>النوع</label><input type="text" id="projectType" placeholder="HTML/CSS, React, PHP..." required></div>
-                    <div class="form-group"><label>الحالة</label><select id="projectStatus"><option value="completed">مكتمل</option><option value="in-progress">قيد التطوير</option></select></div>
-                    <div class="form-group"><label>رابط التحميل (اختياري)</label><input type="text" id="projectFile" placeholder="رابط تحميل المشروع"></div>
-                    <div class="form-error" id="projectError"></div>
-                    <button type="submit" class="btn btn-primary btn-block" id="projectSubmitBtn">💾 حفظ المشروع</button>
-                </form>
-            </div>
+    <!-- ============ نافذة المشروع ============ -->
+    <div class="modal" id="projectModal">
+        <div class="modal-backdrop" onclick="closeModal('projectModal')"></div>
+        <div class="modal-content modal-lg">
+            <button class="modal-close" onclick="closeModal('projectModal')"><i class="fas fa-times"></i></button>
+            <div class="modal-icon"><i class="fas fa-code"></i></div>
+            <h2 id="projectModalTitle">إضافة مشروع</h2>
+            <form id="projectForm" onsubmit="saveProject(event)">
+                <input type="hidden" id="projectId">
+                <div class="input-group"><i class="fas fa-heading"></i><input type="text" id="projectTitle" placeholder="عنوان المشروع" required></div>
+                <div class="input-group"><i class="fas fa-align-left"></i><textarea id="projectDesc" placeholder="وصف المشروع" required></textarea></div>
+                <div class="input-row">
+                    <div class="input-group"><i class="fas fa-tag"></i><input type="text" id="projectType" placeholder="النوع" required></div>
+                    <div class="input-group"><i class="fas fa-flag"></i><select id="projectStatus"><option value="completed">مكتمل</option><option value="in-progress">قيد التطوير</option></select></div>
+                </div>
+                <div class="input-group"><i class="fas fa-link"></i><input type="text" id="projectFile" placeholder="رابط التحميل (اختياري)"></div>
+                <div class="form-error" id="projectError"></div>
+                <button type="submit" class="btn-glow btn-full" id="projectSubmitBtn"><span>حفظ</span><i class="fas fa-save"></i></button>
+            </form>
         </div>
     </div>
 
-    <!-- ==================== حاوية التنبيهات ==================== -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- ==================== زر الرجوع للأعلى ==================== -->
-    <button class="scroll-top" id="scrollTop" title="الرجوع للأعلى">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+    <!-- ============ حاوية التنبيهات ============ -->
+    <div class="toasts" id="toasts"></div>
 
     <script src="script.js"></script>
 </body>
