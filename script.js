@@ -1,10 +1,11 @@
 /* ============================================
-   Dev Place - MAD MAN | Hash Router Version
+   Dev Place - MAD MAN | Full Script v3
+   Hash Router + Full Translation + All Pages
    ============================================ */
 
-// ============ App State ============
+// ============ State ============
 const APP = {
-    page: getPageFromHash(),
+    page: getPage(),
     theme: localStorage.getItem('dp-theme') || 'dark',
     lang: localStorage.getItem('dp-lang') || 'ar',
     user: JSON.parse(localStorage.getItem('dp-user') || 'null'),
@@ -13,11 +14,89 @@ const APP = {
     deleteId: null
 };
 
-function getPageFromHash() {
+function getPage() {
     const hash = window.location.hash;
     if (!hash || hash === '#/' || hash === '') return '/';
-    return hash.replace('#', '') || '/';
+    const path = hash.replace('#', '');
+    if (path.includes('?')) return path.split('?')[0];
+    return path;
 }
+
+// ============ Translation ============
+const L = {
+    ar: {
+        home: 'الرئيسية', about: 'عن المطور', projects: 'المشاريع', contact: 'تواصل',
+        dashboard: 'لوحة التحكم', login: 'دخول', logout: 'خروج', register: 'إنشاء حساب',
+        tagline: 'مبرمج محترف - صانع هوستات ومواقع',
+        heroDesc: 'مبرمج محترف جداً، متخصص في صناعة الهوستات والمواقع الاحترافية. أقدم حلولاً تقنية متكاملة بجودة عالية.',
+        browse: 'تصفح المشاريع', signup: 'سوي حساب',
+        stats1: 'مشروع منجز', stats2: 'عميل سعيد', stats3: 'دعم فني',
+        aboutTitle: 'عن المطور', aboutName: 'MAD MAN',
+        aboutDesc1: 'مبرمج محترف بخبرة واسعة في البرمجة وتطوير المواقع وصناعة الهوستات.',
+        aboutDesc2: 'متخصص في تصميم وتطوير المواقع الاحترافية وحلول الاستضافة المتكاملة.',
+        available: 'متاح للعمل', email: 'البريد', discord: 'ديسكورد', telegram: 'تلجرام',
+        notSet: 'لم يتم تحديد', copy: 'نسخ',
+        projectsTitle: 'المشاريع', projectsDesc: 'مجموعة من المشاريع المجانية للجميع',
+        addProject: 'إضافة مشروع', editProject: 'تعديل مشروع', save: 'حفظ', cancel: 'إلغاء',
+        delete: 'حذف', download: 'تحميل', completed: 'مكتمل', inProgress: 'قيد التطوير',
+        noProjects: 'لا توجد مشاريع', title: 'العنوان', desc: 'الوصف', type: 'النوع',
+        status: 'الحالة', fileLink: 'رابط الملف', optional: 'اختياري',
+        contactTitle: 'تواصل معي', contactDesc: 'تقدر تتواصل معاي عبر هالقنوات',
+        overview: 'نظرة عامة', myProjects: 'مشاريعي', profile: 'الملف الشخصي',
+        accountInfo: 'معلومات الحساب', manageProjects: 'إدارة المشاريع',
+        welcome: 'مرحباً', lastLogin: 'آخر دخول: اليوم', username: 'اسم المستخدم',
+        password: 'كلمة المرور', loginTitle: 'تسجيل الدخول', loginSub: 'أهلاً بعودتك يا بطل',
+        registerTitle: 'إنشاء حساب', registerSub: 'انضم إلينا',
+        haveAccount: 'عندك حساب؟', noAccount: 'ما عندك حساب؟',
+        loginError: 'غلط في الاسم أو كلمة المرور',
+        regSuccess: '✅ تم إنشاء الحساب! شيك بريدك',
+        fillAll: 'كل الحقول مطلوبة', passLength: 'كلمة المرور 6 أحرف على الأقل',
+        userTaken: 'اسم المستخدم مستخدم', emailTaken: 'البريد مستخدم',
+        projectSaved: '✅ تم حفظ المشروع', projectDeleted: '🗑️ تم الحذف',
+        logoutMsg: 'تم تسجيل الخروج', copied: '✅ تم النسخ!',
+        loginRequired: 'سجل دخولك أول', deleteConfirm: 'متأكد تبي تحذف؟',
+        verifySuccess: 'تم تفعيل البريد بنجاح', verifyError: 'رابط غير صالح',
+        error404: 'الصفحة غير موجودة', backHome: 'الرجوع للرئيسية',
+        owner: 'المالك', user: 'مستخدم', role: 'المالك'
+    },
+    en: {
+        home: 'Home', about: 'About', projects: 'Projects', contact: 'Contact',
+        dashboard: 'Dashboard', login: 'Login', logout: 'Logout', register: 'Register',
+        tagline: 'Professional Developer - Host & Website Maker',
+        heroDesc: 'A highly professional programmer specialized in hosting services and professional websites.',
+        browse: 'Browse Projects', signup: 'Create Account',
+        stats1: 'Projects Done', stats2: 'Happy Clients', stats3: '24/7 Support',
+        aboutTitle: 'About Developer', aboutName: 'MAD MAN',
+        aboutDesc1: 'Professional programmer with extensive experience in web development and hosting services.',
+        aboutDesc2: 'Specialized in designing professional websites and integrated hosting solutions.',
+        available: 'Available for work', email: 'Email', discord: 'Discord', telegram: 'Telegram',
+        notSet: 'Not set', copy: 'Copy',
+        projectsTitle: 'Projects', projectsDesc: 'Free projects available for everyone',
+        addProject: 'Add Project', editProject: 'Edit Project', save: 'Save', cancel: 'Cancel',
+        delete: 'Delete', download: 'Download', completed: 'Completed', inProgress: 'In Progress',
+        noProjects: 'No projects yet', title: 'Title', desc: 'Description', type: 'Type',
+        status: 'Status', fileLink: 'File Link', optional: 'Optional',
+        contactTitle: 'Contact Me', contactDesc: 'Reach me through any of these channels',
+        overview: 'Overview', myProjects: 'My Projects', profile: 'Profile',
+        accountInfo: 'Account Info', manageProjects: 'Manage Projects',
+        welcome: 'Welcome', lastLogin: 'Last login: today', username: 'Username',
+        password: 'Password', loginTitle: 'Login', loginSub: 'Welcome back hero',
+        registerTitle: 'Register', registerSub: 'Join us',
+        haveAccount: 'Have an account?', noAccount: 'No account?',
+        loginError: 'Invalid username or password',
+        regSuccess: '✅ Account created! Check your email',
+        fillAll: 'All fields required', passLength: 'Password must be 6+ characters',
+        userTaken: 'Username taken', emailTaken: 'Email taken',
+        projectSaved: '✅ Project saved', projectDeleted: '🗑️ Deleted',
+        logoutMsg: 'Logged out', copied: '✅ Copied!',
+        loginRequired: 'Please login first', deleteConfirm: 'Are you sure?',
+        verifySuccess: 'Email verified successfully', verifyError: 'Invalid link',
+        error404: 'Page not found', backHome: 'Back to Home',
+        owner: 'Owner', user: 'User', role: 'Owner'
+    }
+};
+
+function t(key) { return L[APP.lang]?.[key] || L['ar'][key] || key; }
 
 // ============ Init ============
 (function() {
@@ -28,6 +107,7 @@ function getPageFromHash() {
         if (lt) lt.textContent = 'AR';
     }
     updateThemeIcon();
+    updateStaticText();
 
     if (!APP.users.length) {
         APP.users.push({
@@ -57,6 +137,26 @@ function getPageFromHash() {
 function saveUsers() { localStorage.setItem('dp-users', JSON.stringify(APP.users)); }
 function saveProjects() { localStorage.setItem('dp-projects', JSON.stringify(APP.projects)); }
 
+// ============ Update Static Text (Nav + Footer) ============
+function updateStaticText() {
+    // Update nav links
+    const navLinks = document.querySelectorAll('.nav-item');
+    if (navLinks.length >= 5) {
+        navLinks[0].childNodes[0] && (navLinks[0].textContent = t('home'));
+        navLinks[1].childNodes[0] && (navLinks[1].textContent = t('about'));
+        navLinks[2].childNodes[0] && (navLinks[2].textContent = t('projects'));
+        navLinks[3].childNodes[0] && (navLinks[3].textContent = t('contact'));
+        navLinks[4].childNodes[0] && (navLinks[4].textContent = t('dashboard'));
+    }
+
+    // Update login button
+    const loginBtn = document.querySelector('#loginBtnHeader span') || document.querySelector('#loginBtnHeader');
+    if (loginBtn && document.getElementById('loginBtnHeader')) {
+        const btn = document.getElementById('loginBtnHeader');
+        btn.innerHTML = '<i class="fas fa-arrow-right"></i> ' + t('login');
+    }
+}
+
 // ============ Particles ============
 function createParticles() {
     const c = document.getElementById('particles');
@@ -84,6 +184,7 @@ function toggleLang() {
     const lt = document.querySelector('#langToggle span');
     if (lt) lt.textContent = APP.lang === 'ar' ? 'EN' : 'AR';
     localStorage.setItem('dp-lang', APP.lang);
+    updateStaticText();
     router();
 }
 
@@ -120,8 +221,7 @@ function bindEvents() {
         const link = e.target.closest('[data-link]');
         if (link) {
             e.preventDefault();
-            const href = link.getAttribute('href');
-            navigateTo(href);
+            navigateTo(link.getAttribute('href'));
         }
     });
 
@@ -153,16 +253,14 @@ function bindEvents() {
 
 // ============ Router ============
 function router() {
-    APP.page = getPageFromHash();
+    APP.page = getPage();
     const app = document.getElementById('app');
     if (!app) return;
 
     document.querySelectorAll('.nav-item').forEach(l => {
         l.classList.remove('active');
         const href = l.getAttribute('href');
-        if (href === APP.page || href === '#' + APP.page || href === '/#' + APP.page) {
-            l.classList.add('active');
-        }
+        if (href === APP.page || href === '/' + APP.page) l.classList.add('active');
     });
 
     if (APP.page === '/') renderHome(app);
@@ -181,10 +279,9 @@ function router() {
 }
 
 function navigateTo(path) {
-    window.location.hash = path;
+    window.location.hash = '#' + path.replace(/^\/+/, '');
 }
 
-// ============ Helper to get user info ============
 function getCurrentUserInfo() {
     if (!APP.user) return null;
     return APP.users.find(x => x.username === APP.user.username) || APP.user;
@@ -198,18 +295,18 @@ function renderHome(app) {
             <div class="hero-orb hero-orb-1"></div><div class="hero-orb hero-orb-2"></div><div class="hero-orb hero-orb-3"></div>
         </div>
         <div class="hero-content">
-            <div class="hero-badge"><span class="dot"></span>مبرمج محترف - صانع هوستات ومواقع</div>
+            <div class="hero-badge"><span class="dot"></span>${t('tagline')}</div>
             <h1 class="hero-title"><span class="gradient-text">MAD MAN</span></h1>
-            <p class="hero-subtitle">مبرمج محترف - صانع هوستات ومواقع</p>
-            <p class="hero-desc">مبرمج محترف جداً، متخصص في صناعة الهوستات والمواقع الاحترافية.</p>
+            <p class="hero-subtitle">${t('tagline')}</p>
+            <p class="hero-desc">${t('heroDesc')}</p>
             <div class="hero-buttons">
-                <a href="/projects" class="btn-glow" data-link><i class="fas fa-code"></i> تصفح المشاريع</a>
-                <a href="/register" class="btn-glass" data-link><i class="fas fa-user-plus"></i> سوي حساب</a>
+                <a href="/projects" class="btn-glow" data-link><i class="fas fa-code"></i> ${t('browse')}</a>
+                <a href="/register" class="btn-glass" data-link><i class="fas fa-user-plus"></i> ${t('signup')}</a>
             </div>
             <div class="hero-stats">
-                <div class="stat-item"><div class="stat-number">+50</div><div class="stat-label">مشروع منجز</div></div>
-                <div class="stat-item"><div class="stat-number">+30</div><div class="stat-label">عميل سعيد</div></div>
-                <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">دعم فني</div></div>
+                <div class="stat-item"><div class="stat-number">+50</div><div class="stat-label">${t('stats1')}</div></div>
+                <div class="stat-item"><div class="stat-number">+30</div><div class="stat-label">${t('stats2')}</div></div>
+                <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">${t('stats3')}</div></div>
             </div>
         </div>
     </section>`;
@@ -221,7 +318,7 @@ function renderAbout(app) {
     <section style="padding:120px 0 80px">
         <div class="container">
             <div class="text-center mx-auto" style="margin-bottom:60px">
-                <div class="section-label">👤 عن المطور</div>
+                <div class="section-label">👤 ${t('aboutTitle')}</div>
                 <h2 class="section-title"><span>MAD MAN</span></h2>
             </div>
             <div class="about-grid">
@@ -229,25 +326,25 @@ function renderAbout(app) {
                     <div class="about-avatar-wrap">
                         <div class="about-avatar-ring"></div>
                         <div class="about-avatar"><i class="fas fa-user-secret"></i></div>
-                        <div class="about-floating-card"><i class="fas fa-circle" style="color:#10b981;"></i> متاح للعمل</div>
+                        <div class="about-floating-card"><i class="fas fa-circle" style="color:#10b981;"></i> ${t('available')}</div>
                     </div>
                 </div>
                 <div class="about-info">
-                    <h3>MAD MAN</h3>
-                    <p>مبرمج محترف بخبرة واسعة في البرمجة وتطوير المواقع وصناعة الهوستات.</p>
-                    <p>متخصص في تصميم وتطوير المواقع الاحترافية وحلول الاستضافة المتكاملة.</p>
+                    <h3>${t('aboutName')}</h3>
+                    <p>${t('aboutDesc1')}</p>
+                    <p>${t('aboutDesc2')}</p>
                     <div class="info-cards">
                         <div class="info-card">
                             <div class="info-card-icon"><i class="fas fa-envelope"></i></div>
-                            <div><h4>البريد</h4><span>mohamedhere63@gmail.com <button class="copy-btn" onclick="copyText('mohamedhere63@gmail.com')"><i class="fas fa-copy"></i></button></span></div>
+                            <div><h4>${t('email')}</h4><span>mohamedhere63@gmail.com <button class="copy-btn" onclick="copyText('mohamedhere63@gmail.com')"><i class="fas fa-copy"></i></button></span></div>
                         </div>
                         <div class="info-card">
                             <div class="info-card-icon"><i class="fab fa-discord"></i></div>
-                            <div><h4>ديسكورد</h4><span>81a0 <button class="copy-btn" onclick="copyText('81a0')"><i class="fas fa-copy"></i></button></span></div>
+                            <div><h4>${t('discord')}</h4><span>81a0 <button class="copy-btn" onclick="copyText('81a0')"><i class="fas fa-copy"></i></button></span></div>
                         </div>
                         <div class="info-card">
                             <div class="info-card-icon"><i class="fab fa-telegram"></i></div>
-                            <div><h4>تلجرام</h4><span>لم يتم تحديد</span></div>
+                            <div><h4>${t('telegram')}</h4><span>${t('notSet')}</span></div>
                         </div>
                     </div>
                     <div class="skills-wrap">
@@ -268,7 +365,7 @@ function renderProjects(app) {
     let cards = '';
 
     if (APP.projects.length === 0) {
-        cards = '<div class="empty-state"><i class="fas fa-folder-open"></i><p>لا توجد مشاريع</p></div>';
+        cards = `<div class="empty-state"><i class="fas fa-folder-open"></i><p>${t('noProjects')}</p></div>`;
     } else {
         cards = APP.projects.map(p => `
             <div class="project-card">
@@ -277,11 +374,11 @@ function renderProjects(app) {
                 <p>${p.desc}</p>
                 <div class="project-meta">
                     <span><i class="fas fa-download"></i> ${p.downloads || 0}</span>
-                    <span class="badge-sm ${p.status === 'completed' ? 'badge-done' : 'badge-progress'}">${p.status === 'completed' ? 'مكتمل' : 'قيد التطوير'}</span>
+                    <span class="badge-sm ${p.status === 'completed' ? 'badge-done' : 'badge-progress'}">${p.status === 'completed' ? t('completed') : t('inProgress')}</span>
                 </div>
-                <div class="project-tags">${p.type.split('/').map(t => '<span>' + t.trim() + '</span>').join('')}</div>
+                <div class="project-tags">${p.type.split('/').map(tag => '<span>' + tag.trim() + '</span>').join('')}</div>
                 <div class="project-actions">
-                    <button class="btn-sm-glass" onclick="downloadProject(${p.id})"><i class="fas fa-download"></i> تحميل</button>
+                    <button class="btn-sm-glass" onclick="downloadProject(${p.id})"><i class="fas fa-download"></i> ${t('download')}</button>
                     ${isOwner ? `
                         <button class="btn-sm-glass" onclick="openProjectModal(${p.id})"><i class="fas fa-edit"></i></button>
                         <button class="btn-sm-glass danger" onclick="confirmDeleteProject(${p.id})"><i class="fas fa-trash"></i></button>
@@ -295,11 +392,11 @@ function renderProjects(app) {
     <section style="padding:120px 0 80px">
         <div class="container">
             <div class="text-center mx-auto" style="margin-bottom:60px">
-                <div class="section-label">💻 المشاريع</div>
-                <h2 class="section-title">المشاريع</h2>
-                <p class="section-sub">مجموعة من المشاريع المجانية للجميع</p>
+                <div class="section-label">💻 ${t('projects')}</div>
+                <h2 class="section-title">${t('projectsTitle')}</h2>
+                <p class="section-sub">${t('projectsDesc')}</p>
             </div>
-            ${isOwner ? '<div class="text-center" style="margin-bottom:30px"><button class="btn-glow" onclick="openProjectModal()"><i class="fas fa-plus"></i> إضافة مشروع</button></div>' : ''}
+            ${isOwner ? `<div class="text-center" style="margin-bottom:30px"><button class="btn-glow" onclick="openProjectModal()"><i class="fas fa-plus"></i> ${t('addProject')}</button></div>` : ''}
             <div class="projects-grid">${cards}</div>
         </div>
     </section>`;
@@ -311,24 +408,24 @@ function renderContact(app) {
     <section style="padding:120px 0 80px">
         <div class="container">
             <div class="text-center mx-auto" style="margin-bottom:60px">
-                <div class="section-label">📬 تواصل</div>
-                <h2 class="section-title">تواصل معي</h2>
-                <p class="section-sub">تقدر تتواصل معاي عبر هالقنوات</p>
+                <div class="section-label">📬 ${t('contact')}</div>
+                <h2 class="section-title">${t('contactTitle')}</h2>
+                <p class="section-sub">${t('contactDesc')}</p>
             </div>
             <div class="contact-grid">
                 <div class="contact-card">
                     <div class="contact-card-icon"><i class="fas fa-envelope"></i></div>
-                    <h3>البريد</h3><p>mohamedhere63@gmail.com</p>
-                    <button class="copy-btn" onclick="copyText('mohamedhere63@gmail.com')"><i class="fas fa-copy"></i> نسخ</button>
+                    <h3>${t('email')}</h3><p>mohamedhere63@gmail.com</p>
+                    <button class="copy-btn" onclick="copyText('mohamedhere63@gmail.com')"><i class="fas fa-copy"></i> ${t('copy')}</button>
                 </div>
                 <div class="contact-card">
                     <div class="contact-card-icon"><i class="fab fa-discord"></i></div>
-                    <h3>ديسكورد</h3><p>81a0</p>
-                    <button class="copy-btn" onclick="copyText('81a0')"><i class="fas fa-copy"></i> نسخ</button>
+                    <h3>${t('discord')}</h3><p>81a0</p>
+                    <button class="copy-btn" onclick="copyText('81a0')"><i class="fas fa-copy"></i> ${t('copy')}</button>
                 </div>
                 <div class="contact-card">
                     <div class="contact-card-icon"><i class="fab fa-telegram"></i></div>
-                    <h3>تلجرام</h3><p>لم يتم تحديد</p>
+                    <h3>${t('telegram')}</h3><p>${t('notSet')}</p>
                 </div>
             </div>
         </div>
@@ -337,7 +434,7 @@ function renderContact(app) {
 
 // ============ PAGE: Dashboard ============
 function renderDashboard(app) {
-    if (!APP.user) { navigateTo('/'); showToast('سجل دخولك أول', 'error'); return; }
+    if (!APP.user) { navigateTo('/'); showToast(t('loginRequired'), 'error'); return; }
 
     const total = APP.projects.length;
     const done = APP.projects.filter(p => p.status === 'completed').length;
@@ -349,31 +446,31 @@ function renderDashboard(app) {
         <aside class="dashboard-sidebar">
             <div class="sidebar-header"><div class="sidebar-logo">Dev <span>Place</span></div></div>
             <nav class="sidebar-nav">
-                <a href="/dashboard" class="active" data-link><i class="fas fa-grid"></i> نظرة عامة</a>
-                <a href="/projects" data-link><i class="fas fa-folder"></i> المشاريع</a>
-                <a href="/profile" data-link><i class="fas fa-user"></i> الملف الشخصي</a>
-                <a href="#" onclick="logout()"><i class="fas fa-logout"></i> خروج</a>
+                <a href="/dashboard" class="active" data-link><i class="fas fa-grid"></i> ${t('overview')}</a>
+                <a href="/projects" data-link><i class="fas fa-folder"></i> ${t('myProjects')}</a>
+                <a href="/profile" data-link><i class="fas fa-user"></i> ${t('profile')}</a>
+                <a href="#" onclick="logout()"><i class="fas fa-logout"></i> ${t('logout')}</a>
             </nav>
         </aside>
         <main class="dashboard-main">
             <div class="welcome-card">
-                <div><h2>👋 مرحباً ${APP.user.username}!</h2><p style="opacity:0.85;">آخر دخول: اليوم</p></div>
-                <a href="/projects" class="btn-glass" data-link style="color:#fff;border-color:rgba(255,255,255,0.4);">إدارة المشاريع</a>
+                <div><h2>👋 ${t('welcome')} ${APP.user.username}!</h2><p style="opacity:0.85;">${t('lastLogin')}</p></div>
+                <a href="/projects" class="btn-glass" data-link style="color:#fff;border-color:rgba(255,255,255,0.4);">${t('manageProjects')}</a>
             </div>
             <div class="stats-grid">
-                <div class="stat-card-db"><div class="stat-icon-db purple"><i class="fas fa-code"></i></div><div class="stat-info-db"><h3>${total}</h3><p>مشروع</p></div></div>
-                <div class="stat-card-db"><div class="stat-icon-db green"><i class="fas fa-check"></i></div><div class="stat-info-db"><h3>${done}</h3><p>مكتمل</p></div></div>
-                <div class="stat-card-db"><div class="stat-icon-db blue"><i class="fas fa-download"></i></div><div class="stat-info-db"><h3>${dls}</h3><p>تحميل</p></div></div>
-                <div class="stat-card-db"><div class="stat-icon-db pink"><i class="fas fa-star"></i></div><div class="stat-info-db"><h3>4.9</h3><p>تقييم</p></div></div>
+                <div class="stat-card-db"><div class="stat-icon-db purple"><i class="fas fa-code"></i></div><div class="stat-info-db"><h3>${total}</h3><p>${t('projects')}</p></div></div>
+                <div class="stat-card-db"><div class="stat-icon-db green"><i class="fas fa-check"></i></div><div class="stat-info-db"><h3>${done}</h3><p>${t('completed')}</p></div></div>
+                <div class="stat-card-db"><div class="stat-icon-db blue"><i class="fas fa-download"></i></div><div class="stat-info-db"><h3>${dls}</h3><p>${t('download')}</p></div></div>
+                <div class="stat-card-db"><div class="stat-icon-db pink"><i class="fas fa-star"></i></div><div class="stat-info-db"><h3>4.9</h3><p>${t('stats2')}</p></div></div>
             </div>
             <div class="info-grid">
                 <div class="info-block">
-                    <div class="info-block-header">👤 معلومات الحساب</div>
+                    <div class="info-block-header">👤 ${t('accountInfo')}</div>
                     <div class="info-block-body">
-                        <div class="info-row"><div class="info-row-icon"><i class="fas fa-user"></i></div><div><strong>الاسم</strong><span>${u.username}</span></div></div>
-                        <div class="info-row"><div class="info-row-icon"><i class="fas fa-envelope"></i></div><div><strong>البريد</strong><span>${u.email} <button class="copy-btn" onclick="copyText('${u.email}')"><i class="fas fa-copy"></i></button></span></div></div>
-                        <div class="info-row"><div class="info-row-icon"><i class="fab fa-discord"></i></div><div><strong>ديسكورد</strong><span>${u.discord || '81a0'}</span></div></div>
-                        <div class="info-row"><div class="info-row-icon"><i class="fab fa-telegram"></i></div><div><strong>تلجرام</strong><span>${u.telegram || 'لم يتم تحديد'}</span></div></div>
+                        <div class="info-row"><div class="info-row-icon"><i class="fas fa-user"></i></div><div><strong>${t('username')}</strong><span>${u.username}</span></div></div>
+                        <div class="info-row"><div class="info-row-icon"><i class="fas fa-envelope"></i></div><div><strong>${t('email')}</strong><span>${u.email} <button class="copy-btn" onclick="copyText('${u.email}')"><i class="fas fa-copy"></i></button></span></div></div>
+                        <div class="info-row"><div class="info-row-icon"><i class="fab fa-discord"></i></div><div><strong>${t('discord')}</strong><span>${u.discord || '81a0'}</span></div></div>
+                        <div class="info-row"><div class="info-row-icon"><i class="fab fa-telegram"></i></div><div><strong>${t('telegram')}</strong><span>${u.telegram || t('notSet')}</span></div></div>
                     </div>
                 </div>
             </div>
@@ -387,25 +484,25 @@ function renderRegister(app) {
     app.innerHTML = `
     <section class="auth-page">
         <div class="auth-card">
-            <div class="auth-card-header"><div class="auth-logo">Dev Place</div><p>انضم إلينا</p></div>
+            <div class="auth-card-header"><div class="auth-logo">Dev Place</div><p>${t('registerSub')}</p></div>
             <div class="auth-card-body">
                 <form onsubmit="handleRegister(event)">
-                    <div class="input-group"><i class="fas fa-user"></i><input type="text" id="regUser" placeholder="اسم المستخدم" required></div>
-                    <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="regEmail" placeholder="البريد" required></div>
+                    <div class="input-group"><i class="fas fa-user"></i><input type="text" id="regUser" placeholder="${t('username')}" required></div>
+                    <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="regEmail" placeholder="${t('email')}" required></div>
                     <div class="input-row">
-                        <div class="input-group"><i class="fab fa-discord"></i><input type="text" id="regDiscord" placeholder="ديسكورد"></div>
-                        <div class="input-group"><i class="fab fa-telegram"></i><input type="text" id="regTelegram" placeholder="تلجرام"></div>
+                        <div class="input-group"><i class="fab fa-discord"></i><input type="text" id="regDiscord" placeholder="${t('discord')}"></div>
+                        <div class="input-group"><i class="fab fa-telegram"></i><input type="text" id="regTelegram" placeholder="${t('telegram')}"></div>
                     </div>
                     <div class="input-group">
                         <i class="fas fa-key"></i>
-                        <input type="password" id="regPass" placeholder="كلمة المرور" required minlength="6">
+                        <input type="password" id="regPass" placeholder="${t('password')}" required minlength="6">
                         <button type="button" class="toggle-pass-btn" onclick="togglePass('regPass',this)"><i class="fas fa-eye"></i></button>
                     </div>
                     <div class="form-error" id="regError"></div>
                     <div class="form-success" id="regSuccess"></div>
-                    <button type="submit" class="btn-glow btn-full"><span>إنشاء حساب</span><i class="fas fa-arrow-left"></i></button>
+                    <button type="submit" class="btn-glow btn-full"><span>${t('register')}</span><i class="fas fa-arrow-left"></i></button>
                 </form>
-                <p class="modal-footer-text">عندك حساب؟ <a href="/" onclick="openModal('loginModal');return false;">دخول</a></p>
+                <p class="modal-footer-text">${t('haveAccount')} <a href="/" onclick="openModal('loginModal');return false;">${t('login')}</a></p>
             </div>
         </div>
     </section>`;
@@ -413,7 +510,8 @@ function renderRegister(app) {
 
 // ============ PAGE: Verify ============
 function renderVerify(app) {
-    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.includes('?') ? hash.split('?')[1] : '');
     const token = params.get('token');
     const email = params.get('email');
     let html = '';
@@ -424,12 +522,12 @@ function renderVerify(app) {
             user.verified = true;
             user.verificationToken = null;
             saveUsers();
-            html = '<section class="auth-page"><div class="auth-card"><div class="auth-card-header"><div class="auth-logo">✅</div><p>تم التفعيل</p></div><div class="auth-card-body text-center"><p style="font-size:3rem;">✅</p><p>بريدك مفعل</p><a href="/" class="btn-glow" style="margin-top:16px;" onclick="openModal(\'loginModal\');return false;">سجل دخولك</a></div></div></section>';
+            html = `<section class="auth-page"><div class="auth-card"><div class="auth-card-header"><div class="auth-logo">✅</div><p>${t('verifySuccess')}</p></div><div class="auth-card-body text-center"><p style="font-size:3rem;">✅</p><p>${t('verifySuccess')}</p><a href="/" class="btn-glow" style="margin-top:16px;" onclick="openModal('loginModal');return false;">${t('login')}</a></div></div></section>`;
         } else {
-            html = '<section class="auth-page"><div class="auth-card"><div class="auth-card-header"><div class="auth-logo">❌</div></div><div class="auth-card-body text-center"><p>رابط غير صالح</p></div></div></section>';
+            html = `<section class="auth-page"><div class="auth-card"><div class="auth-card-header"><div class="auth-logo">❌</div></div><div class="auth-card-body text-center"><p>${t('verifyError')}</p></div></div></section>`;
         }
     } else {
-        html = '<section class="auth-page"><div class="auth-card"><div class="auth-card-header"><div class="auth-logo">❌</div></div><div class="auth-card-body text-center"><p>رابط غير صالح</p></div></div></section>';
+        html = `<section class="auth-page"><div class="auth-card"><div class="auth-card-header"><div class="auth-logo">❌</div></div><div class="auth-card-body text-center"><p>${t('verifyError')}</p></div></div></section>`;
     }
     app.innerHTML = html;
 }
@@ -445,11 +543,11 @@ function renderProfile(app) {
             <div class="profile-avatar-lg"><i class="fas fa-user-secret"></i></div>
             <div class="profile-body">
                 <h2>${u.username}</h2>
-                <div class="role-badge">${u.role === 'owner' ? 'المالك' : 'مستخدم'}</div>
+                <div class="role-badge">${u.role === 'owner' ? t('role') : t('user')}</div>
                 <div class="profile-details">
-                    <div class="pd-row"><div class="pd-icon"><i class="fas fa-envelope"></i></div><div class="pd-info"><strong>البريد</strong><span>${u.email} <button class="copy-btn" onclick="copyText('${u.email}')"><i class="fas fa-copy"></i></button></span></div></div>
-                    <div class="pd-row"><div class="pd-icon"><i class="fab fa-discord"></i></div><div class="pd-info"><strong>ديسكورد</strong><span>${u.discord || '81a0'}</span></div></div>
-                    <div class="pd-row"><div class="pd-icon"><i class="fab fa-telegram"></i></div><div class="pd-info"><strong>تلجرام</strong><span>${u.telegram || 'لم يتم تحديد'}</span></div></div>
+                    <div class="pd-row"><div class="pd-icon"><i class="fas fa-envelope"></i></div><div class="pd-info"><strong>${t('email')}</strong><span>${u.email} <button class="copy-btn" onclick="copyText('${u.email}')"><i class="fas fa-copy"></i></button></span></div></div>
+                    <div class="pd-row"><div class="pd-icon"><i class="fab fa-discord"></i></div><div class="pd-info"><strong>${t('discord')}</strong><span>${u.discord || '81a0'}</span></div></div>
+                    <div class="pd-row"><div class="pd-icon"><i class="fab fa-telegram"></i></div><div class="pd-info"><strong>${t('telegram')}</strong><span>${u.telegram || t('notSet')}</span></div></div>
                 </div>
             </div>
         </div>
@@ -462,8 +560,8 @@ function render404(app) {
     <section class="error-section">
         <div>
             <div class="error-code">404</div>
-            <p>الصفحة غير موجودة</p>
-            <a href="/" class="btn-glow" data-link><i class="fas fa-home"></i> الرئيسية</a>
+            <p>${t('error404')}</p>
+            <a href="/" class="btn-glow" data-link><i class="fas fa-home"></i> ${t('backHome')}</a>
         </div>
     </section>`;
 }
@@ -477,7 +575,7 @@ function handleLogin(e) {
 
     const user = APP.users.find(u => u.username === username || u.email === username);
     if (!user || atob(user.password) !== password) {
-        errorEl.textContent = 'غلط في الاسم أو كلمة المرور';
+        errorEl.textContent = t('loginError');
         return;
     }
 
@@ -486,7 +584,7 @@ function handleLogin(e) {
     closeModal('loginModal');
     updateAuthUI();
     navigateTo('/dashboard');
-    showToast('👋 مرحباً ' + user.username + '!', 'success');
+    showToast('👋 ' + t('welcome') + ' ' + user.username + '!', 'success');
 }
 
 function handleRegister(e) {
@@ -502,20 +600,20 @@ function handleRegister(e) {
     errorEl.textContent = '';
     successEl.style.display = 'none';
 
-    if (!username || !email || !password) { errorEl.textContent = 'كل الحقول مطلوبة'; return; }
-    if (password.length < 6) { errorEl.textContent = 'كلمة المرور 6 أحرف على الأقل'; return; }
-    if (APP.users.find(u => u.username === username)) { errorEl.textContent = 'اسم المستخدم مستخدم'; return; }
-    if (APP.users.find(u => u.email === email)) { errorEl.textContent = 'البريد مستخدم'; return; }
+    if (!username || !email || !password) { errorEl.textContent = t('fillAll'); return; }
+    if (password.length < 6) { errorEl.textContent = t('passLength'); return; }
+    if (APP.users.find(u => u.username === username)) { errorEl.textContent = t('userTaken'); return; }
+    if (APP.users.find(u => u.email === email)) { errorEl.textContent = t('emailTaken'); return; }
 
     const token = 'v_' + Math.random().toString(36).substr(2, 9);
     APP.users.push({ id: APP.users.length + 1, username, email, password: btoa(password), verified: false, verificationToken: token, role: 'user', discord, telegram, created: new Date().toISOString() });
     saveUsers();
 
-    successEl.textContent = '✅ تم! شيك بريدك';
+    successEl.textContent = t('regSuccess');
     successEl.style.display = 'block';
     e.target.reset();
 
-    console.log('Verify link: /verify-email?token=' + token + '&email=' + email);
+    console.log('Verify: /verify-email?token=' + token + '&email=' + email);
     setTimeout(function() { navigateTo('/verify-email?token=' + token + '&email=' + email); }, 2000);
 }
 
@@ -524,7 +622,7 @@ function logout() {
     localStorage.removeItem('dp-user');
     updateAuthUI();
     navigateTo('/');
-    showToast('تم تسجيل الخروج');
+    showToast(t('logoutMsg'));
 }
 
 function updateAuthUI() {
@@ -539,12 +637,12 @@ function updateAuthUI() {
     }
 }
 
-// ============ Projects CRUD ============
+// ============ Projects ============
 function openProjectModal(id) {
     id = id || null;
     document.getElementById('projectId').value = id || '';
-    document.getElementById('projectModalTitle').textContent = id ? 'تعديل مشروع' : 'إضافة مشروع';
-    document.getElementById('projectSubmitBtn').innerHTML = '<span>حفظ</span><i class="fas fa-save"></i>';
+    document.getElementById('projectModalTitle').textContent = id ? t('editProject') : t('addProject');
+    document.getElementById('projectSubmitBtn').innerHTML = '<span>' + t('save') + '</span><i class="fas fa-save"></i>';
 
     if (id) {
         const p = APP.projects.find(function(x) { return x.id === id; });
@@ -576,7 +674,7 @@ function saveProject(e) {
     const file = document.getElementById('projectFile').value.trim();
     const errorEl = document.getElementById('projectError');
 
-    if (!title || !desc || !type) { errorEl.textContent = 'كل الحقول مطلوبة'; return; }
+    if (!title || !desc || !type) { errorEl.textContent = t('fillAll'); return; }
 
     if (id) {
         const p = APP.projects.find(function(x) { return x.id === id; });
@@ -588,7 +686,7 @@ function saveProject(e) {
     saveProjects();
     closeModal('projectModal');
     router();
-    showToast('✅ تم حفظ المشروع', 'success');
+    showToast(t('projectSaved'), 'success');
 }
 
 function confirmDeleteProject(id) {
@@ -598,7 +696,7 @@ function confirmDeleteProject(id) {
         saveProjects();
         closeModal('deleteModal');
         router();
-        showToast('🗑️ تم الحذف');
+        showToast(t('projectDeleted'));
     };
     openModal('deleteModal');
 }
@@ -636,7 +734,7 @@ function closeModal(id) {
 // ============ Utility ============
 function copyText(txt) {
     navigator.clipboard.writeText(txt).then(function() {
-        showToast('✅ تم النسخ!', 'success');
+        showToast(t('copied'), 'success');
     });
 }
 
