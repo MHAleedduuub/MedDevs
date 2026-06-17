@@ -1,11 +1,11 @@
 /* ============================================
-   Dev Place - MAD MAN | Final Script
-   Hash Router - Arabic/English - All Pages
+   Dev Place - MAD MAN | History API Router
+   Clean URLs - Refresh Works - Arabic/English
    ============================================ */
 
 // ============ State ============
 const APP = {
-    page: 'home',
+    page: window.location.pathname,
     theme: localStorage.getItem('dp-theme') || 'dark',
     lang: localStorage.getItem('dp-lang') || 'ar',
     user: JSON.parse(localStorage.getItem('dp-user') || 'null'),
@@ -19,7 +19,8 @@ const APP = {
     document.documentElement.setAttribute('data-theme', APP.theme);
     if (APP.lang === 'en') {
         document.documentElement.dir = 'ltr';
-        document.querySelector('#langToggle span').textContent = 'AR';
+        var lt = document.querySelector('#langToggle span');
+        if (lt) lt.textContent = 'AR';
     }
     updateThemeIcon();
 
@@ -43,10 +44,10 @@ const APP = {
     }
 
     createParticles();
+    updateNavLinks();
     router();
     updateAuthUI();
     bindEvents();
-    updateNavLinks();
 })();
 
 function saveUsers() { localStorage.setItem('dp-users', JSON.stringify(APP.users)); }
@@ -54,7 +55,7 @@ function saveProjects() { localStorage.setItem('dp-projects', JSON.stringify(APP
 
 // ============ Translation ============
 function t(key) {
-    const ar = {
+    var ar = {
         home: 'الرئيسية', about: 'عن المطور', projects: 'المشاريع', contact: 'تواصل',
         dashboard: 'لوحة التحكم', login: 'دخول', logout: 'خروج', register: 'إنشاء حساب',
         tagline: 'مبرمج محترف - صانع هوستات ومواقع',
@@ -87,7 +88,7 @@ function t(key) {
         error404: 'الصفحة غير موجودة', backHome: 'الرجوع للرئيسية',
         role: 'المالك', userRole: 'مستخدم'
     };
-    const en = {
+    var en = {
         home: 'Home', about: 'About', projects: 'Projects', contact: 'Contact',
         dashboard: 'Dashboard', login: 'Login', logout: 'Logout', register: 'Register',
         tagline: 'Professional Developer - Host & Website Maker',
@@ -125,15 +126,19 @@ function t(key) {
 
 // ============ Update Nav Links ============
 function updateNavLinks() {
-    const navLinks = document.querySelectorAll('.nav-item');
-    const texts = ['home', 'about', 'projects', 'contact', 'dashboard'];
-    navLinks.forEach((link, i) => {
+    var texts = ['home', 'about', 'projects', 'contact', 'dashboard'];
+    var navLinks = document.querySelectorAll('.nav-item');
+    navLinks.forEach(function(link, i) {
         if (texts[i]) {
             link.textContent = t(texts[i]);
-            link.setAttribute('href', '/#' + (i === 0 ? '' : texts[i]));
+            if (i === 0) {
+                link.setAttribute('href', '/');
+            } else {
+                link.setAttribute('href', '/' + texts[i]);
+            }
         }
     });
-    const loginBtn = document.getElementById('loginBtnHeader');
+    var loginBtn = document.getElementById('loginBtnHeader');
     if (loginBtn && !APP.user) {
         loginBtn.innerHTML = '<i class="fas fa-arrow-right"></i> ' + t('login');
     }
@@ -141,12 +146,12 @@ function updateNavLinks() {
 
 // ============ Particles ============
 function createParticles() {
-    const c = document.getElementById('particles');
+    var c = document.getElementById('particles');
     if (!c) return;
-    for (let i = 0; i < 25; i++) {
-        const p = document.createElement('div');
+    for (var i = 0; i < 25; i++) {
+        var p = document.createElement('div');
         p.className = 'particle';
-        const s = 2 + Math.random() * 3;
+        var s = 2 + Math.random() * 3;
         p.style.cssText = 'width:' + s + 'px;height:' + s + 'px;left:' + Math.random() * 100 + '%;animation-duration:' + (8 + Math.random() * 10) + 's;animation-delay:' + Math.random() * 8 + 's';
         c.appendChild(p);
     }
@@ -163,14 +168,15 @@ function toggleTheme() {
 function toggleLang() {
     APP.lang = APP.lang === 'ar' ? 'en' : 'ar';
     document.documentElement.dir = APP.lang === 'ar' ? 'rtl' : 'ltr';
-    document.querySelector('#langToggle span').textContent = APP.lang === 'ar' ? 'EN' : 'AR';
+    var lt = document.querySelector('#langToggle span');
+    if (lt) lt.textContent = APP.lang === 'ar' ? 'EN' : 'AR';
     localStorage.setItem('dp-lang', APP.lang);
     updateNavLinks();
     router();
 }
 
 function updateThemeIcon() {
-    const icon = document.querySelector('#themeToggle i');
+    var icon = document.querySelector('#themeToggle i');
     if (icon) icon.className = APP.theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 }
 
@@ -186,7 +192,10 @@ function bindEvents() {
         if (st) st.classList.toggle('show', sy > 300);
     });
 
-    window.addEventListener('hashchange', router);
+    window.addEventListener('popstate', function() {
+        APP.page = window.location.pathname;
+        router();
+    });
 
     document.addEventListener('mousemove', function(e) {
         var cur = document.querySelector('.cursor');
@@ -201,7 +210,9 @@ function bindEvents() {
             e.preventDefault();
             var href = link.getAttribute('href');
             if (href) {
-                window.location.hash = href.replace(/^#/, '').replace(/^\//, '#/') || '#/';
+                history.pushState({}, '', href);
+                APP.page = href;
+                router();
             }
         }
     });
@@ -230,37 +241,32 @@ function bindEvents() {
 
 // ============ Router ============
 function router() {
-    var hash = window.location.hash;
-    var page = 'home';
-
-    if (hash && hash !== '#/' && hash !== '#') {
-        page = hash.replace('#/', '').replace('#', '').split('?')[0];
-    }
-
-    APP.page = page;
+    var path = window.location.pathname;
+    APP.page = path;
     var app = document.getElementById('app');
     if (!app) return;
 
-    // Update active nav
     document.querySelectorAll('.nav-item').forEach(function(l) {
         l.classList.remove('active');
         var href = l.getAttribute('href');
-        if (href && href.indexOf(page) > -1) l.classList.add('active');
-        if (page === 'home' && (href === '#/' || href === '#/home' || href === '/')) l.classList.add('active');
+        if (href === path || (path === '/' && href === '/')) {
+            l.classList.add('active');
+        }
     });
 
-    if (page === 'home') renderHome(app);
-    else if (page === 'about') renderAbout(app);
-    else if (page === 'projects') renderProjects(app);
-    else if (page === 'contact') renderContact(app);
-    else if (page === 'dashboard') renderDashboard(app);
-    else if (page === 'register') renderRegister(app);
-    else if (page === 'verify-email') renderVerify(app);
-    else if (page === 'profile') renderProfile(app);
+    if (path === '/') renderHome(app);
+    else if (path === '/about') renderAbout(app);
+    else if (path === '/projects') renderProjects(app);
+    else if (path === '/contact') renderContact(app);
+    else if (path === '/dashboard') renderDashboard(app);
+    else if (path === '/register') renderRegister(app);
+    else if (path === '/verify-email') renderVerify(app);
+    else if (path === '/profile') renderProfile(app);
     else render404(app);
 
     window.scrollTo(0, 0);
-    document.getElementById('nav').classList.remove('active');
+    var nav = document.getElementById('nav');
+    if (nav) nav.classList.remove('active');
 }
 
 function getCurrentUserInfo() {
@@ -270,7 +276,7 @@ function getCurrentUserInfo() {
 
 // ============ PAGE: Home ============
 function renderHome(app) {
-    app.innerHTML = '<section class="hero"><div class="hero-bg"><div class="hero-orb hero-orb-1"></div><div class="hero-orb hero-orb-2"></div><div class="hero-orb hero-orb-3"></div></div><div class="hero-content"><div class="hero-badge"><span class="dot"></span>' + t('tagline') + '</div><h1 class="hero-title"><span class="gradient-text">MAD MAN</span></h1><p class="hero-subtitle">' + t('tagline') + '</p><p class="hero-desc">' + t('heroDesc') + '</p><div class="hero-buttons"><a href="/#/projects" class="btn-glow" data-link><i class="fas fa-code"></i> ' + t('browse') + '</a><a href="/#/register" class="btn-glass" data-link><i class="fas fa-user-plus"></i> ' + t('signup') + '</a></div><div class="hero-stats"><div class="stat-item"><div class="stat-number">+50</div><div class="stat-label">' + t('stats1') + '</div></div><div class="stat-item"><div class="stat-number">+30</div><div class="stat-label">' + t('stats2') + '</div></div><div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">' + t('stats3') + '</div></div></div></div></section>';
+    app.innerHTML = '<section class="hero"><div class="hero-bg"><div class="hero-orb hero-orb-1"></div><div class="hero-orb hero-orb-2"></div><div class="hero-orb hero-orb-3"></div></div><div class="hero-content"><div class="hero-badge"><span class="dot"></span>' + t('tagline') + '</div><h1 class="hero-title"><span class="gradient-text">MAD MAN</span></h1><p class="hero-subtitle">' + t('tagline') + '</p><p class="hero-desc">' + t('heroDesc') + '</p><div class="hero-buttons"><a href="/projects" class="btn-glow" data-link><i class="fas fa-code"></i> ' + t('browse') + '</a><a href="/register" class="btn-glass" data-link><i class="fas fa-user-plus"></i> ' + t('signup') + '</a></div><div class="hero-stats"><div class="stat-item"><div class="stat-number">+50</div><div class="stat-label">' + t('stats1') + '</div></div><div class="stat-item"><div class="stat-number">+30</div><div class="stat-label">' + t('stats2') + '</div></div><div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">' + t('stats3') + '</div></div></div></div></section>';
 }
 
 // ============ PAGE: About ============
@@ -301,26 +307,25 @@ function renderContact(app) {
 
 // ============ PAGE: Dashboard ============
 function renderDashboard(app) {
-    if (!APP.user) { window.location.hash = '#/'; showToast(t('loginRequired'), 'error'); return; }
+    if (!APP.user) { navigateTo('/'); showToast(t('loginRequired'), 'error'); return; }
 
     var total = APP.projects.length;
     var done = APP.projects.filter(function(p) { return p.status === 'completed'; }).length;
     var dls = APP.projects.reduce(function(s, p) { return s + (p.downloads || 0); }, 0);
     var u = getCurrentUserInfo();
 
-    app.innerHTML = '<div class="dashboard-layout"><aside class="dashboard-sidebar"><div class="sidebar-header"><div class="sidebar-logo">Dev <span>Place</span></div></div><nav class="sidebar-nav"><a href="/#/dashboard" class="active" data-link><i class="fas fa-grid"></i> ' + t('overview') + '</a><a href="/#/projects" data-link><i class="fas fa-folder"></i> ' + t('myProjects') + '</a><a href="/#/profile" data-link><i class="fas fa-user"></i> ' + t('profile') + '</a><a href="#" onclick="logout()"><i class="fas fa-logout"></i> ' + t('logout') + '</a></nav></aside><main class="dashboard-main"><div class="welcome-card"><div><h2>👋 ' + t('welcome') + ' ' + APP.user.username + '!</h2><p style="opacity:0.85;">' + t('lastLogin') + '</p></div><a href="/#/projects" class="btn-glass" data-link style="color:#fff;border-color:rgba(255,255,255,0.4);">' + t('manageProjects') + '</a></div><div class="stats-grid"><div class="stat-card-db"><div class="stat-icon-db purple"><i class="fas fa-code"></i></div><div class="stat-info-db"><h3>' + total + '</h3><p>' + t('projects') + '</p></div></div><div class="stat-card-db"><div class="stat-icon-db green"><i class="fas fa-check"></i></div><div class="stat-info-db"><h3>' + done + '</h3><p>' + t('completed') + '</p></div></div><div class="stat-card-db"><div class="stat-icon-db blue"><i class="fas fa-download"></i></div><div class="stat-info-db"><h3>' + dls + '</h3><p>' + t('download') + '</p></div></div><div class="stat-card-db"><div class="stat-icon-db pink"><i class="fas fa-star"></i></div><div class="stat-info-db"><h3>4.9</h3><p>' + t('stats2') + '</p></div></div></div><div class="info-grid"><div class="info-block"><div class="info-block-header">👤 ' + t('accountInfo') + '</div><div class="info-block-body"><div class="info-row"><div class="info-row-icon"><i class="fas fa-user"></i></div><div><strong>' + t('username') + '</strong><span>' + u.username + '</span></div></div><div class="info-row"><div class="info-row-icon"><i class="fas fa-envelope"></i></div><div><strong>' + t('email') + '</strong><span>' + u.email + ' <button class="copy-btn" onclick="copyText(\'' + u.email + '\')"><i class="fas fa-copy"></i></button></span></div></div><div class="info-row"><div class="info-row-icon"><i class="fab fa-discord"></i></div><div><strong>' + t('discord') + '</strong><span>' + (u.discord || '81a0') + '</span></div></div><div class="info-row"><div class="info-row-icon"><i class="fab fa-telegram"></i></div><div><strong>' + t('telegram') + '</strong><span>' + (u.telegram || t('notSet')) + '</span></div></div></div></div></div></main></div>';
+    app.innerHTML = '<div class="dashboard-layout"><aside class="dashboard-sidebar"><div class="sidebar-header"><div class="sidebar-logo">Dev <span>Place</span></div></div><nav class="sidebar-nav"><a href="/dashboard" class="active" data-link><i class="fas fa-grid"></i> ' + t('overview') + '</a><a href="/projects" data-link><i class="fas fa-folder"></i> ' + t('myProjects') + '</a><a href="/profile" data-link><i class="fas fa-user"></i> ' + t('profile') + '</a><a href="#" onclick="logout()"><i class="fas fa-logout"></i> ' + t('logout') + '</a></nav></aside><main class="dashboard-main"><div class="welcome-card"><div><h2>👋 ' + t('welcome') + ' ' + APP.user.username + '!</h2><p style="opacity:0.85;">' + t('lastLogin') + '</p></div><a href="/projects" class="btn-glass" data-link style="color:#fff;border-color:rgba(255,255,255,0.4);">' + t('manageProjects') + '</a></div><div class="stats-grid"><div class="stat-card-db"><div class="stat-icon-db purple"><i class="fas fa-code"></i></div><div class="stat-info-db"><h3>' + total + '</h3><p>' + t('projects') + '</p></div></div><div class="stat-card-db"><div class="stat-icon-db green"><i class="fas fa-check"></i></div><div class="stat-info-db"><h3>' + done + '</h3><p>' + t('completed') + '</p></div></div><div class="stat-card-db"><div class="stat-icon-db blue"><i class="fas fa-download"></i></div><div class="stat-info-db"><h3>' + dls + '</h3><p>' + t('download') + '</p></div></div><div class="stat-card-db"><div class="stat-icon-db pink"><i class="fas fa-star"></i></div><div class="stat-info-db"><h3>4.9</h3><p>' + t('stats2') + '</p></div></div></div><div class="info-grid"><div class="info-block"><div class="info-block-header">👤 ' + t('accountInfo') + '</div><div class="info-block-body"><div class="info-row"><div class="info-row-icon"><i class="fas fa-user"></i></div><div><strong>' + t('username') + '</strong><span>' + u.username + '</span></div></div><div class="info-row"><div class="info-row-icon"><i class="fas fa-envelope"></i></div><div><strong>' + t('email') + '</strong><span>' + u.email + ' <button class="copy-btn" onclick="copyText(\'' + u.email + '\')"><i class="fas fa-copy"></i></button></span></div></div><div class="info-row"><div class="info-row-icon"><i class="fab fa-discord"></i></div><div><strong>' + t('discord') + '</strong><span>' + (u.discord || '81a0') + '</span></div></div><div class="info-row"><div class="info-row-icon"><i class="fab fa-telegram"></i></div><div><strong>' + t('telegram') + '</strong><span>' + (u.telegram || t('notSet')) + '</span></div></div></div></div></div></main></div>';
 }
 
 // ============ PAGE: Register ============
 function renderRegister(app) {
-    if (APP.user) { window.location.hash = '#/dashboard'; return; }
+    if (APP.user) { navigateTo('/dashboard'); return; }
     app.innerHTML = '<section class="auth-page"><div class="auth-card"><div class="auth-card-header"><div class="auth-logo">Dev Place</div><p>' + t('registerSub') + '</p></div><div class="auth-card-body"><form onsubmit="handleRegister(event)"><div class="input-group"><i class="fas fa-user"></i><input type="text" id="regUser" placeholder="' + t('username') + '" required></div><div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="regEmail" placeholder="' + t('email') + '" required></div><div class="input-row"><div class="input-group"><i class="fab fa-discord"></i><input type="text" id="regDiscord" placeholder="' + t('discord') + '"></div><div class="input-group"><i class="fab fa-telegram"></i><input type="text" id="regTelegram" placeholder="' + t('telegram') + '"></div></div><div class="input-group"><i class="fas fa-key"></i><input type="password" id="regPass" placeholder="' + t('password') + '" required minlength="6"><button type="button" class="toggle-pass-btn" onclick="togglePass(\'regPass\',this)"><i class="fas fa-eye"></i></button></div><div class="form-error" id="regError"></div><div class="form-success" id="regSuccess"></div><button type="submit" class="btn-glow btn-full"><span>' + t('register') + '</span><i class="fas fa-arrow-left"></i></button></form><p class="modal-footer-text">' + t('haveAccount') + ' <a href="/" onclick="openModal(\'loginModal\');return false;">' + t('login') + '</a></p></div></div></section>';
 }
 
 // ============ PAGE: Verify ============
 function renderVerify(app) {
-    var hash = window.location.hash;
-    var params = new URLSearchParams(hash.includes('?') ? hash.split('?')[1] : '');
+    var params = new URLSearchParams(window.location.search);
     var token = params.get('token');
     var email = params.get('email');
     var html = '';
@@ -343,14 +348,14 @@ function renderVerify(app) {
 
 // ============ PAGE: Profile ============
 function renderProfile(app) {
-    if (!APP.user) { window.location.hash = '#/'; return; }
+    if (!APP.user) { navigateTo('/'); return; }
     var u = getCurrentUserInfo();
     app.innerHTML = '<section class="profile-page"><div class="profile-card"><div class="profile-cover"></div><div class="profile-avatar-lg"><i class="fas fa-user-secret"></i></div><div class="profile-body"><h2>' + u.username + '</h2><div class="role-badge">' + (u.role === 'owner' ? t('role') : t('userRole')) + '</div><div class="profile-details"><div class="pd-row"><div class="pd-icon"><i class="fas fa-envelope"></i></div><div class="pd-info"><strong>' + t('email') + '</strong><span>' + u.email + ' <button class="copy-btn" onclick="copyText(\'' + u.email + '\')"><i class="fas fa-copy"></i></button></span></div></div><div class="pd-row"><div class="pd-icon"><i class="fab fa-discord"></i></div><div class="pd-info"><strong>' + t('discord') + '</strong><span>' + (u.discord || '81a0') + '</span></div></div><div class="pd-row"><div class="pd-icon"><i class="fab fa-telegram"></i></div><div class="pd-info"><strong>' + t('telegram') + '</strong><span>' + (u.telegram || t('notSet')) + '</span></div></div></div></div></div></section>';
 }
 
 // ============ PAGE: 404 ============
 function render404(app) {
-    app.innerHTML = '<section class="error-section"><div><div class="error-code">404</div><p>' + t('error404') + '</p><a href="/#/" class="btn-glow" data-link><i class="fas fa-home"></i> ' + t('backHome') + '</a></div></section>';
+    app.innerHTML = '<section class="error-section"><div><div class="error-code">404</div><p>' + t('error404') + '</p><a href="/" class="btn-glow" data-link><i class="fas fa-home"></i> ' + t('backHome') + '</a></div></section>';
 }
 
 // ============ Auth ============
@@ -370,7 +375,7 @@ function handleLogin(e) {
     localStorage.setItem('dp-user', JSON.stringify(APP.user));
     closeModal('loginModal');
     updateAuthUI();
-    window.location.hash = '#/dashboard';
+    navigateTo('/dashboard');
     showToast('👋 ' + t('welcome') + ' ' + user.username + '!', 'success');
 }
 
@@ -400,14 +405,14 @@ function handleRegister(e) {
     successEl.style.display = 'block';
     e.target.reset();
 
-    setTimeout(function() { window.location.hash = '#/verify-email?token=' + token + '&email=' + email; }, 2000);
+    setTimeout(function() { navigateTo('/verify-email?token=' + token + '&email=' + email); }, 2000);
 }
 
 function logout() {
     APP.user = null;
     localStorage.removeItem('dp-user');
     updateAuthUI();
-    window.location.hash = '#/';
+    navigateTo('/');
     showToast(t('logoutMsg'));
 }
 
@@ -495,6 +500,13 @@ function downloadProject(id) {
         showToast('📥 ' + p.title, 'success');
         if (p.file) window.open(p.file, '_blank');
     }
+}
+
+// ============ Navigation Helper ============
+function navigateTo(path) {
+    history.pushState({}, '', path);
+    APP.page = path;
+    router();
 }
 
 // ============ Modal ============
